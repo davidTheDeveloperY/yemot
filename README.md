@@ -2,7 +2,7 @@
 # בדוק שיש לך את הגירסא המעודכנת של pip
 Windows
 ```
-py -m pip install --upgrade pip
+pip install --upgrade pip
 ```
 
 Linux/MAC OS
@@ -14,7 +14,7 @@ python3 -m pip install --upgrade pip
 # התקנת הפרוייקט
 Windows
 ```
-py -m pip install yemot
+pip install yemot
 ```
 
 Linux/MAC OS
