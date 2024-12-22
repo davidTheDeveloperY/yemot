@@ -1,5 +1,5 @@
-
-# בדוק שיש לך את הגירסא המעודכנת של pip
+# בדיקות והתקנת הפרוייקט
+## בדוק שיש לך את הגירסא המעודכנת של pip
 Windows
 ```
 pip install --upgrade pip
@@ -11,7 +11,7 @@ python3 -m pip install --upgrade pip
 ```
 
 
-# התקנת הפרוייקט
+## התקנת הפרוייקט
 Windows
 ```
 pip install yemot
@@ -21,49 +21,77 @@ Linux/MAC OS
 ```
 python3 -m pip install yemot
 ```
-
+## מבנה הפרוייקט
+הפרוייקט מורכב מארבעה מודלים
+1. Client - ניהול החיבור לימות המשיח
+2. System - קבלת מידע והפעולות במערכת
+3. Campaign - קבלת מידע וביצוע פעולות בקמפיינים
+4. Ivr - קבלת מידע וביצוע פעולות בשלוחות
 # איך להשתמש בפרוייקט
-כלול את הספריה בקובץ שלך
+## כלול את הספריה בקובץ שלך
+אפשר לכלול את כל המודלים 
 ```
-from yemot import Yemot
+import yemot
+```
+או מודול מסויים
+```
+from yemot import Client, System, Campaign, Ivr
 ```
 וחבר אותו למשתנה, כשאתה קורא לפרוייקט אתה חייב לשלוח את המספר מערכת והסיסמא
 ```
-yemot = Yemot(username='0xxxxxxxxx', password='xxxxxxx')
+client = Client(username='0xxxxxxxxx', password='xxxxxxx')
 ```
+כמובן אם השתמשנו ב import yemotאז צריך להשתמש ב 
+```
+client = yemot.Client(username='0xxxxxxxxx', password='xxxxxxx')
+```
+וכן בכל השאר
 
 כעת תוכל לבצע את הקריאות
 
 בשביל להתחבר מחדש אחרי ניתוק או ממערכת אחרת
 ```
-yemot.login(username='0xxxxxxxxx', password='xxxxxxx')
+client.login(username='0xxxxxxxxx', password='xxxxxxx')
 ```
 לניתוק
 ```
-yemot.logout()
+client.logout()
+```
+## שימוש במודול System
+קריאה למודול
+```
+system = System(client)
 ```
 לקבלת פרטי המערכת
 ```
-yemot.system_info()
+system.system_info()
 ```
 עדכון פרטי מערכת
 שלח את הנתון שהינך רוצה לעדכן
 ```
-yemot.set_system_info(name='שם', email='אימייל', organization='חברה', contact_name='שם איש קשר', phones='טלפון', invoice_name='שם לחשבונית', invoice_address='כתובת לחשבונית', fax='פקס', access_password='סיסמת גישה', record_password='סיסמת הקלטות')
+system.set_system_info(name='שם', email='אימייל', organization='חברה', contact_name='שם איש קשר', phones='טלפון', invoice_name='שם לחשבונית', invoice_address='כתובת לחשבונית', fax='פקס', access_password='סיסמת גישה', record_password='סיסמת הקלטות')
 ```
 לקבלת רשימת חיובי יחידות
 ניתן לשלוח מאיזה מספר נתון שימשוך
 וכן כמה נתונים שימשוך ברירת מחדל 100
 ```
-yemot.get_units_transactions(first='מספר התחלתי', limit='כמה נתונים')
+system.get_transactions(first='מספר התחלתי', limit='כמה נתונים')
 ```
 העברת יחידות
 ```
-yemot.transfer_units(destination='מספר מערכת להעברה', amount='כמות יחידות'
+system.transfer_units(destination='מספר מערכת להעברה', amount='כמות יחידות')
 ```
 רשימת השיחות הפעילות במערכת
 ```
-yemot.incoming_calls()
+system.get_incoming_calls()
+```
+העלאת קובץ למערכת
+```
+system.upload_file()
+```
+הורדת קבצים
+```
+system.download_file(path=)
 ```
 # הפרוייקט תתעדכן בתקופה הקרובה באופן שוטף אז תתעדכנו
 
@@ -73,3 +101,4 @@ yemot.incoming_calls()
 
 
 ### References
+https://f2.freeivr.co.il/post/75
