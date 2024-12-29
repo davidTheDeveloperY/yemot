@@ -21,6 +21,57 @@ class Client:
         self.base_url = "https://www.call2all.co.il/ym/api/"
         self.login()
 
+    
+    def __str__(self):
+        """
+        return the token if it exists
+
+        Returns
+        -------
+        string
+            the token if it exists
+        """
+        return self.token
+
+    
+    def __repr__(self):
+        """
+        return the token if it exists
+
+        Returns
+        -------
+        string
+            the token if it exists
+        """
+        return self.token
+    
+    def __del__(self):
+        """
+        logout from the yemot and delete the token
+        """
+        self.logout()
+
+    
+    def __enter__(self):
+        """
+        
+        establish a connection to the yemot
+        """
+        self.connected = True
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        """
+        logout from the yemot and delete the token
+        """
+        self.logout()
+        self.connected = False
+        print('connection closed')
+        if exc_type:
+            print(f'An exception accured: {exc_type}, {exc_value}')
+        return True
+
+
     def login(self, username=None, password=None):
         """
         reconnect to the yemot with the username and password or regenerate the token if the token is expired
@@ -128,12 +179,25 @@ class Client:
         json
             the response of the request
         """
-        if self.token == None:
+        if self.token is None:
             self.login()
-        r = requests.post(f"{self.base_url}{web_service}/?token={self.token}", files={'file': open(file, 'rb')}, data=data)
+
+        with open(file, 'rb') as f:
+            r = requests.post(
+                f"{self.base_url}{web_service}/?token={self.token}",
+                files={'file': f},
+                headers={'Content-Type': 'multipart/form-data'},
+                data=data
+            )
+
         if 'message' in r.json():
             self.login()
-            r = requests.post(f"{self.base_url}{web_service}/?token={self.token}", files={'file': open(file, 'rb')}, data=data)
+            with open(file, 'rb') as f:
+                r = requests.post(
+                    f"{self.base_url}{web_service}/?token={self.token}",
+                    files={'file': f},
+                    headers={'Content-Type': 'multipart/form-data'},
+                    data=data
+                )
         return r.json()
-    
     

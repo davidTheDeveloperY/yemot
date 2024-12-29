@@ -18,7 +18,24 @@ class Campaign:
         """
         return self.client.get("GetTemplates")
     
-    def update_template(self, template_id, description=None, caller_id=None, incoming_policy=None, customer_default=None, max_acive_channels=None, max_bridged_channels=None, originate_timeout=None, vm_detect=None, filter_enabled=None, max_dail_attempts=None, redial_wait=None, redail_policy=None, yemot_context=None, bridge_to=None, play_private_msg=None, remove_request=None):
+    def update_template(
+            self, template_id,
+            description: str=None,
+            caller_id: str=None,
+            incoming_policy: str=None,
+            customer_default: str=None,
+            max_acive_channels: int=None,
+            max_bridged_channels: int=None,
+            originate_timeout: int=None,
+            vm_detect: str=None,
+            filter_enabled: str=None,
+            max_dail_attempts: int=None,
+            redial_wait: int=None,
+            redail_policy: str=None,
+            yemot_context: str=None,
+            bridge_to: str=None,
+            play_private_msg: str=None,
+            remove_request: str=None):
         """
         Update a telephony template with given parameters.
 
@@ -131,7 +148,7 @@ class Campaign:
         }
         return self.client.post("UpdateTemplate", data=data)
     
-    def upload_template_file(self, file, name, type, convertAudio=None):
+    def upload_template_file(self, file: str, name: str, type: str, convertAudio: str=None):
         """
         Upload the template file
 
@@ -170,13 +187,9 @@ class Campaign:
         if type == 'PRIVATE_MSG':
             path = f'PrivateMsg/{name}.wav'
         
-        file = {
-            "file": open(file, "rb")
-        }
-        
         return self.client.post_file("UploadFile", data={"path": path, "convertAudio": convertAudio}, file=file)
     
-    def downlaoad_template_file(self, name, type):
+    def downlaoad_template_file(self, name: str, type: str):
         """
         Download the template file
 
@@ -212,7 +225,7 @@ class Campaign:
     
     # TODO: Implement the FileAction method and GetTextFile method and UploadTextFile method
 
-    def create_template(self, description):
+    def create_template(self, description: str):
         """
         Create a new template the details of the template will be generated from the default template to change the details use the update_template method
 
@@ -229,7 +242,7 @@ class Campaign:
         
         return self.client.get("CreateTemplate", {"description": description})
     
-    def delete_template(self, template_id):
+    def delete_template(self, template_id: int):
         """
         Delete the template by the template id
 
@@ -248,7 +261,7 @@ class Campaign:
         
         return self.client.get("DeleteTemplate", {"templateId": template_id})
     
-    def get_template_entries(self, template_id):
+    def get_template_entries(self, template_id: int):
         """
         Get the template entries
 
@@ -267,7 +280,7 @@ class Campaign:
         
         return self.client.get("GetTemplateEntries", {"templateId": template_id})
     
-    def update_template_entry(self, template_id, rowid=None, phone=None, name=None, more_info=None, blocked=0):
+    def update_template_entry(self, template_id: int, rowid: int=None, phone: str=None, name: str=None, more_info: str=None, blocked: str=0):
         """
         Update a template entry or create a new one
 

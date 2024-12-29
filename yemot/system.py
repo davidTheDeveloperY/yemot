@@ -137,16 +137,16 @@ class System:
         """
         return self.client.get("GetIncomingCalls")
     
-    def upload_file(self, file=None, path=None, convert_audio=0, auto_numbering=False, tts=0):
+    def upload_file(self, file, path, convert_audio=0, auto_numbering=False, tts=0):
         """
         Upload file to the system
 
         Parameters
         ----------
-        file : string, optional
-            the path to the file to upload, by default None
-        path : string, optional
-            the path where will the file saved its need to start with ivr2: and includeing the name if not using the auto numbering, by default None
+        file : string
+            the path to the file to upload,
+        path : string
+            the path where will the file saved its need to start with ivr2: and includeing the name if not using the auto numbering
         convert_audio : int, optional
             if it a audio file not in the wav format convert it, by default 0
         auto_numbering : bool, optional
@@ -177,12 +177,9 @@ class System:
             "autoNumbering": auto_numbering,
             "tts": tts
         }
-        files = {}
-        if file:
-            file = open(file, 'rb')
         return self.client.post_file("UploadFile", data=data, file=file)
     
-    def upload_file_big(self, file=None, path=None, convert_audio=None, auto_numbering=None, tts=None):
+    def upload_file_big(self, file, path, convert_audio=None, auto_numbering=None, tts=None):
         """
         Upload file this is for uploading a file what is over 50MB not redy yet
         """
