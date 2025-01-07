@@ -35,7 +35,7 @@ import yemot
 ```
 או מודול מסויים
 ```
-from yemot import Client, System, Campaign, Ivr
+from yemot import Client, System, Campaign, IVR
 ```
 וחבר אותו למשתנה, כשאתה קורא לפרוייקט אתה חייב לשלוח את המספר מערכת והסיסמא
 ```
@@ -57,6 +57,9 @@ client.login(username='0xxxxxxxxx', password='xxxxxxx')
 ```
 client.logout()
 ```
+
+### [לכל הפונקציות של Client](docs/CLIENT.md)
+
 ## שימוש במודול System
 קריאה למודול
 ```
@@ -66,33 +69,8 @@ system = System(client)
 ```
 system.system_info()
 ```
-עדכון פרטי מערכת
-שלח את הנתון שהינך רוצה לעדכן
-```
-system.set_system_info(name='שם', email='אימייל', organization='חברה', contact_name='שם איש קשר', phones='טלפון', invoice_name='שם לחשבונית', invoice_address='כתובת לחשבונית', fax='פקס', access_password='סיסמת גישה', record_password='סיסמת הקלטות')
-```
-לקבלת רשימת חיובי יחידות
-ניתן לשלוח מאיזה מספר נתון שימשוך
-וכן כמה נתונים שימשוך ברירת מחדל 100
-```
-system.get_transactions(first='מספר התחלתי', limit='כמה נתונים')
-```
-העברת יחידות
-```
-system.transfer_units(destination='מספר מערכת להעברה', amount='כמות יחידות')
-```
-רשימת השיחות הפעילות במערכת
-```
-system.get_incoming_calls()
-```
-העלאת קובץ למערכת
-```
-system.upload_file()
-```
-הורדת קבצים
-```
-system.download_file(path=)
-```
+### [לכל הפונקציות של System](docs/SYSTEM.md)
+
 ## שימוש במודול Campaign
 קריאה למודול
 ```
@@ -102,25 +80,19 @@ camp = Campaign(client)
 ```
 camp.get_templates()
 ```
-עדכון תבנית קמפיין
-```
-camp.update_template()
-```
-העלאת קבצי קמפיין
-```
-camp.upload_template_file()
-```
-הורדת קבצי קמפיין
-```
-camp.downlaoad_template_file()
-```
-יצירת תבנית קמפיין חדשה
+### [לכל הפונקציות של Campaign](docs/CAMPAIGN.md)
 
-מחיקת תבנית קמפיין
+## שימוש במודול IVR
+קריאה למודול
+```
+ivr = IVR(client)
+```
+קבלת רשימת כל השלוחות
+```
+ivr.get_ivrs()
+```
+### [לכל הפונקציות של IVR](docs/IVR.md)
 
-הצגת המספרים שברשימת התפוצה
-
-עדכון מספר בודד ברשימת תפוצה
 
 # הפרוייקט יעודכן בתקופה הקרובה באופן שוטף אז תתעדכנו
 

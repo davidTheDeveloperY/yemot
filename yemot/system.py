@@ -7,9 +7,9 @@ class System:
     def __init__(self, client: Client):
         self.client = client
 
-    def system_info(self):
+    def get_session(self):
         """
-        Get the system information
+        קבלת פרטי המערכת
 
         Returns
         -------
@@ -18,9 +18,9 @@ class System:
         """
         return self.client.get("GetSession")
     
-    def set_system_info(self, name=None, email=None, organization=None, contact_name=None, phones=None, invoice_name=None, invoice_address=None, fax=None, access_password=None, record_password=None):
+    def set_customer_details(self, name=None, email=None, organization=None, contact_name=None, phones=None, invoice_name=None, invoice_address=None, fax=None, access_password=None, record_password=None):
         """
-        Set the system information you can set some of the parameters or all of them to set the system information
+        עדכון פרטי משתמש
 
         Parameters
         ----------
@@ -66,8 +66,7 @@ class System:
     
     def set_password(self, new_password):
         """
-        Set the new password
-
+        שינוי סיסמת ניהול
         Parameters
         ----------
         new_password : string
@@ -86,7 +85,7 @@ class System:
     
     def get_transactions(self, first=None, limit='100', filter=None):
         """
-        Get the transactions of the units in the system
+        קבלת רשימת חיובי יחידות
 
         Parameters
         ----------
@@ -106,7 +105,7 @@ class System:
     
     def transfer_units(self, amount, destination):
         """
-        Transfer units to another account
+        העברת יחידות
 
         Parameters
         ----------
@@ -128,7 +127,7 @@ class System:
     
     def get_incoming_calls(self):
         """
-        Get the incoming calls
+        קבלת רשימת שיחות הפעילות במערכת
 
         Returns
         -------
@@ -139,7 +138,7 @@ class System:
     
     def upload_file(self, file, path, convert_audio=0, auto_numbering=False, tts=0):
         """
-        Upload file to the system
+        העלאת קובץ
 
         Parameters
         ----------
@@ -200,7 +199,7 @@ class System:
     
     def download_file(self, path):
         """
-        Download file from the system
+        הורדת קובץ
 
         Parameters
         ----------

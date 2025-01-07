@@ -9,7 +9,7 @@ class Campaign:
 
     def get_templates(self):
         """
-        Get the templates
+        קבלת מצב כל תבניות הקמפיינים
 
         Returns
         -------
@@ -37,7 +37,7 @@ class Campaign:
             play_private_msg: str=None,
             remove_request: str=None):
         """
-        Update a telephony template with given parameters.
+        עדכון תבנית קמפיין
 
         Parameters
         ----------
@@ -150,7 +150,7 @@ class Campaign:
     
     def upload_template_file(self, file: str, name: str, type: str, convertAudio: str=None):
         """
-        Upload the template file
+        העלאת קבצי שמע לקמפיין
 
         Parameters
         ----------
@@ -191,7 +191,7 @@ class Campaign:
     
     def downlaoad_template_file(self, name: str, type: str):
         """
-        Download the template file
+        הורדת קבצי שמע מקמפיין
 
         Parameters
         ----------
@@ -227,7 +227,7 @@ class Campaign:
 
     def create_template(self, description: str):
         """
-        Create a new template the details of the template will be generated from the default template to change the details use the update_template method
+        יצירת תבנית קמפיין חדשה
 
         Parameters
         ----------
@@ -244,7 +244,7 @@ class Campaign:
     
     def delete_template(self, template_id: int):
         """
-        Delete the template by the template id
+        מחיקת תבנית קמפיין
 
         Parameters
         ----------
@@ -263,7 +263,7 @@ class Campaign:
     
     def get_template_entries(self, template_id: int):
         """
-        Get the template entries
+        קבלת המספרים שברשימת התפוצה
 
         Parameters
         ----------
@@ -282,7 +282,7 @@ class Campaign:
     
     def update_template_entry(self, template_id: int, rowid: int=None, phone: str=None, name: str=None, more_info: str=None, blocked: str=0):
         """
-        Update a template entry or create a new one
+        עדכון מספר בודד ברשימת תפוצה
 
         Parameters
         ----------
@@ -324,5 +324,164 @@ class Campaign:
         return self.client.post("UpdateTemplateEntry", data=data)
     
 
+    def update_template_entries(self, template_id: int, rowids: str, action: str):
+        """
+        עדכון סטטוס או מחיקה של מספרים מרשימת התפוצה
 
+        Parameters
+        ----------
+        template_id : int
+            the template id
+        rowids : string
+            the rowids to update
+        action : string
+            the action to do, one of: 'DELETE', 'BLOCK', 'UNBLOCK'
+
+        Returns
+        -------
+        json
+            the response of the request
+        """
+        if not isinstance(template_id, int):
+            return "The template_id must be a integer"
         
+        if action not in ['DELETE', 'BLOCK', 'UNBLOCK']:
+            return "The action must be one of the following: 'DELETE', 'BLOCK', 'UNBLOCK'"
+        
+        data = {
+            "templateId": template_id,
+            "rowids": rowids,
+            "action": action
+        }
+        return self.client.post("UpdateTemplateEntries", data=data)
+    
+    def clear_template_entries(self, template_id: int):
+        """
+        מחיקת כל המספרים מרשימת התפוצה
+
+        Parameters
+        ----------
+        template_id : int
+            the template id
+
+        Returns
+        -------
+        json
+            the response of the request
+        """
+        if not isinstance(template_id, int):
+            return "The template_id must be a integer"
+        
+        return self.client.get("ClearTemplateEntries", {"templateId": template_id})
+    
+    def upload_phone_list(self, template_id: int, data: str, nameColumns: int=1, defaultePrefix: str=None, delimiter: str=',', updateType: str='UPDATE', blocked: int=0):
+        """
+        העלאת רשימת מספרים לרשימת התפוצה
+
+        Parameters
+        ----------
+        template_id : int
+            the template id
+        data : string
+            the phone list
+        nameColumns : int, optional
+            the name of the columns, by default 1
+        defaultePrefix : string, optional
+            the default prefix, by default None
+        delimiter : string, optional
+            the delimiter, by default ','
+        updateType : string, optional
+            the update type, one of: 'UPDATE', 'NEW', 'REMOVE', by default 'UPDATE'
+        blocked : int, optional
+            to add the user in blcked list, by default 0
+
+        Returns
+        -------
+        json
+            the response of the request
+        """
+        if not isinstance(template_id, int):
+            return "The template_id must be a integer"
+        if not data:
+            return "The data is required"
+
+        if nameColumns and not isinstance(nameColumns, int):
+            return "The nameColumns must be a integer"
+        
+        if updateType not in ['UPDATE', 'NEW', 'REMOVE']:
+            return "The updateType must be one of the following: 'UPDATE', 'NEW', 'REMOVE'"
+
+        if blocked not in [0, 1]:
+            return "The blocked must be 0 or 1"
+        
+        data = {
+            "templateId": template_id,
+            "data": data,
+            "nameColumns": nameColumns,
+            "defaultePrefix": defaultePrefix,
+            "delimiter": delimiter,
+            "updateType": updateType,
+            "blocked": blocked
+        }
+        return self.client.post("UploadPhoneList", data=data)
+    
+    def run_campaign(self, template_id: int, phones: str=None, callerId: str=None):
+        """
+        הפעלת קמפיין
+
+        Parameters
+        ----------
+        template_id : int
+            the template id
+        phones : string, optional
+            the phones to run the campaign on, by default None
+        callerId : string, optional
+            the caller id to use, by default None
+
+        Returns
+        -------
+        json
+            the response of the request
+        """
+        if not isinstance(template_id, int):
+            return "The template_id must be a integer"
+        
+        data = {
+            "templateId": template_id,
+            "phones": phones,
+            "callerId": callerId
+        }
+        return self.client.post("RunCampaign", data=data)
+    
+    def schedule_campaign(self, template_id: int, time: str, phones: str=None, callerId: str=None):
+        """
+        קמפיין מתוזמן
+
+        Parameters
+        ----------
+        template_id : int
+            the template id
+        time : string
+            the time to run the campaign
+        phones : string, optional
+            the phones to run the campaign on, by default None
+        callerId : string, optional
+            the caller id to use, by default None
+
+        Returns
+        -------
+        json
+            the response of the request
+        """
+        if not isinstance(template_id, int):
+            return "The template_id must be a integer"
+        
+        data = {
+            "templateId": template_id,
+            "time": time,
+            "phones": phones,
+            "callerId": callerId
+        }
+        return self.client.post("ScheduleCampaign", data=data)
+    
+    
