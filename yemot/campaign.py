@@ -4,7 +4,7 @@ class Campaign:
     """
     Get the campaign information and set the campaign information
     """
-    def __init__(self, client: Client):
+    def __init__(self, client: Client) -> None:
         self.client = client
 
     def get_templates(self):
@@ -170,9 +170,9 @@ class Campaign:
         """
         if name == None:
             name = "Default"
-        if type not in ['VOICE', 'SMS', 'BRIDGE', 'PRIVATE_FIRST', 'PRIVATE_MSG']:
+        if type.upper() not in ['VOICE', 'SMS', 'BRIDGE', 'PRIVATE_FIRST', 'PRIVATE_MSG']:
             return "The type must be one of the following: 'VOICE', 'SMS', 'BRIDGE' - for a msg befor bridge, 'PRIVATE_FIRST', 'PRIVATE_MSG'"
-        
+        name = name.upper()
         if not file:
             return "The file is required"
         
@@ -242,7 +242,7 @@ class Campaign:
         
         return self.client.get("CreateTemplate", {"description": description})
     
-    def delete_template(self, template_id: int):
+    def delete_template(self, template_id: int|str):
         """
         מחיקת תבנית קמפיין
 
@@ -256,12 +256,12 @@ class Campaign:
         json
             success message
         """
-        if not isinstance(template_id, int):
-            return "The template_id must be a integer"
+        if not isinstance(template_id, (int, str)):
+            return "The template_id must be a integer or a str"
         
         return self.client.get("DeleteTemplate", {"templateId": template_id})
     
-    def get_template_entries(self, template_id: int):
+    def get_template_entries(self, template_id: int|str):
         """
         קבלת המספרים שברשימת התפוצה
 
@@ -275,12 +275,12 @@ class Campaign:
         json
             the template entries
         """
-        if not isinstance(template_id, int):
-            return "The template_id must be a integer"
+        if not isinstance(template_id, (int, str)):
+            return "The template_id must be a integer or a str"
         
         return self.client.get("GetTemplateEntries", {"templateId": template_id})
     
-    def update_template_entry(self, template_id: int, rowid: int=None, phone: str=None, name: str=None, more_info: str=None, blocked: str=0):
+    def update_template_entry(self, template_id: int|str, rowid: int=None, phone: str=None, name: str=None, more_info: str=None, blocked: int=0):
         """
         עדכון מספר בודד ברשימת תפוצה
 
@@ -304,8 +304,8 @@ class Campaign:
         json
             the response of the request
         """
-        if not isinstance(template_id, int):
-            return "The template_id must be a integer"
+        if not isinstance(template_id, (int, str)):
+            return "The template_id must be a integer or a str"
         
         if rowid and not isinstance(rowid, int):
             return "The rowid must be a integer"

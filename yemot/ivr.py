@@ -1,5 +1,4 @@
 from .client import Client
-
 class IVR:
     def __init__(self, client: Client):
         self.client = client

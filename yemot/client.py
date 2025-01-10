@@ -1,11 +1,12 @@
 import requests
 import time
+import os
 
 class Client:
     """
     connect to the yemot
     """
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str, login: bool = True) -> None:
         """
         connect to the yemot with the username and password
 
@@ -18,12 +19,16 @@ class Client:
         """
         self.username = username
         self.password = password
+        self.temp_token = False if login else True
         self.token = None
         self.base_url = "https://www.call2all.co.il/ym/api/"
-        self.login()
+        if not self.temp_token:
+            self.login()
+        else:
+            self.token = f"{username}:{password}"
 
     
-    def __str__(self):
+    def __str__(self) -> str:
         """
         return the token if it exists
 
@@ -35,7 +40,7 @@ class Client:
         return self.token
 
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         return the token if it exists
 
@@ -46,11 +51,12 @@ class Client:
         """
         return self.token
     
-    def __del__(self):
+    def __del__(self) -> None:
         """
         logout from the yemot and delete the token
         """
-        self.logout()
+        if not self.temp_token:
+            self.logout()
 
     
     def __enter__(self):
@@ -61,19 +67,20 @@ class Client:
         self.connected = True
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback):
+    def __exit__(self, exc_type, exc_value, exc_traceback) -> True:
         """
         logout from the yemot and delete the token
         """
-        self.logout()
-        self.connected = False
-        print('connection closed')
-        if exc_type:
-            print(f'An exception accured: {exc_type}, {exc_value}')
+        if not self.temp_token:
+            self.logout()
+            self.connected = False
+            print('connection closed')
+            if exc_type:
+                print(f'An exception accured: {exc_type}, {exc_value}')
         return True
 
 
-    def login(self, username=None, password=None):
+    def login(self, username=None, password=None) -> str:
         """
         reconnect to the yemot with the username and password or regenerate the token if the token is expired
 
@@ -93,15 +100,15 @@ class Client:
             self.username = username
         if password != None:
             self.password = password
-        url = f"https://www.call2all.co.il/ym/api/Login?username={self.username}&password={self.password}"
-        r = requests.get(url)
-        if 'token' in r.json():
-            self.token = r.json()['token']
-            return r.json()["responseStatus"]
+        url = f"{self.base_url}Login?username={self.username}&password={self.password}"
+        r = requests.get(url).json()
+        if r.get('token'):
+            self.token = r['token']
+            return r["responseStatus"]
         if self.token == None:
             return 'username or password is incorrect'
         
-    def logout(self):
+    def logout(self) -> str:
         """
         logout from the yemot and delete the token
 
@@ -111,10 +118,10 @@ class Client:
             the response message of loging out
         """
         web_service = "Logout"
-        r = requests.get(f"https://www.call2all.co.il/ym/api/{web_service}/?token={self.token}")
+        r = requests.get(f"{self.base_url}{web_service}/?token={self.token}")
         return r.json()['message']
     
-    def get(self, web_service, params=None):
+    def get(self, web_service, params:dict|None=None) -> dict:
         """
         a template for get request to the yemot
 
@@ -138,7 +145,7 @@ class Client:
             r = requests.get(f"{self.base_url}{web_service}/?token={self.token}", params=params)
         return r.json()
     
-    def post(self, web_service, data=None):
+    def post(self, web_service: str, data:dict|None=None) -> dict:
         """
         a template for post request to the yemot
 
@@ -162,7 +169,7 @@ class Client:
             r = requests.post(f"{self.base_url}{web_service}/?token={self.token}", data=data)
         return r.json()
     
-    def post_file(self, web_service, file, data=None):
+    def post_file(self, web_service: str, file: str, data:dict|None=None) -> dict:
         """
         a template for post request to the yemot with file
 
@@ -182,7 +189,8 @@ class Client:
         """
         if self.token is None:
             self.login()
-
+        if not os.path.exists(file):
+            return "file not found in the path"
         with open(file, 'rb') as f:
             r = requests.post(
                 f"{self.base_url}{web_service}/?token={self.token}",
@@ -202,3 +210,11 @@ class Client:
                 )
         return r.json()
     
+    def download_file(self, file_path_in_ivr: str) -> requests.Response:
+        url = f"{self.base_url}DownloadFile"
+        params = {
+            "token": self.token,
+            "path": file_path_in_ivr
+        }
+        response = requests.get(url=url, params=params)
+        return response

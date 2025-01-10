@@ -1,3 +1,5 @@
+import os
+
 from .client import Client
 
 class System:
@@ -64,7 +66,7 @@ class System:
         }
         return self.client.post("SetCustomerDetails", data)
     
-    def set_password(self, new_password):
+    def set_password(self, new_password: int|str):
         """
         שינוי סיסמת ניהול
         Parameters
@@ -197,7 +199,7 @@ class System:
         # uploader - yemot-admin
         return "Not implemented"
     
-    def download_file(self, path):
+    def download_file(self, path_in_ivr: str, file_path: str):
         """
         הורדת קובץ
 
@@ -208,9 +210,15 @@ class System:
 
         Returns
         -------
-        json
-            the response of the download
+        None
         """
-        if not path:
+        if not path_in_ivr:
             return "The path is required"
-        return self.client.get("DownloadFile", {"path": path})   
+        response = self.client.download_file(file_path_in_ivr=path_in_ivr)
+        target_folder = os.path.split(file_path)[0]
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder, exist_ok=True)
+        with open(file_path, "wb") as file:
+            for chank in response.iter_content(chunk_size=8192):
+                if chank:
+                    file.write(chank)
